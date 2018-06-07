@@ -63,23 +63,27 @@ public class ObjectController {
         ObjectListing listing = s3.listObjects(BUCKET);
         for (S3ObjectSummary objectSummary : listing.getObjectSummaries()) {
             S3Object o = new S3Object(objectSummary.getKey());
-            AccessControlList acl = s3.getObjectAcl(BUCKET, objectSummary.getKey());
-            Boolean bad = ! acl.getGrantsAsList()
-                    .stream()
-                    .anyMatch(grant -> grant.getGrantee().getIdentifier().equals(GOOD_USER));
-            String acls = acl.getGrantsAsList()
-                    .stream()
-                    .map(grant -> {
-                        return grant.getGrantee().getIdentifier() +
-                                "/" +
-                                grant.getPermission().toString();
-                    })
-                    .collect(Collectors.joining(", "));
-            o.setName(objectSummary.getKey());
-            o.setDate(objectSummary.getLastModified());
-            o.setAcls(acls);
-            o.setBad(bad);
-            objects.add(o);
+            try {
+                AccessControlList acl = s3.getObjectAcl(BUCKET, objectSummary.getKey());
+                Boolean bad = !acl.getGrantsAsList()
+                        .stream()
+                        .anyMatch(grant -> grant.getGrantee().getIdentifier().equals(GOOD_USER));
+                String acls = acl.getGrantsAsList()
+                        .stream()
+                        .map(grant -> {
+                            return grant.getGrantee().getIdentifier() +
+                                    "/" +
+                                    grant.getPermission().toString();
+                        })
+                        .collect(Collectors.joining(", "));
+                o.setName(objectSummary.getKey());
+                o.setDate(objectSummary.getLastModified());
+                o.setAcls(acls);
+                o.setBad(bad);
+                objects.add(o);
+            } catch (AmazonS3Exception e) {
+                log.info(e);
+            }
         }
         return objects;
     }
