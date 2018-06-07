@@ -1,0 +1,39 @@
+group 'com.emc.ecs'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+    }
+}
+
+ext {
+    bootVersion = "1.5.2.RELEASE"
+}
+
+apply plugin: 'org.springframework.boot'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter-tomcat"
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("org.springframework.boot:spring-boot-devtools")
+    compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.113'
+    testCompile group: 'junit', name: 'junit'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.8'
+}

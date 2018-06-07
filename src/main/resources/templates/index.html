@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cloud Foundry Broker ACL Fix</title>
+    <style>
+        table, th, td {
+           border: 1px solid #ccc;
+        }
+
+        th, td {
+          padding: 15px;
+          text-align: left;
+        }
+        tr:nth-child(even) {background-color: #f2f2f2;}
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <h1>Repo Bucket ACL Fix</h1>
+        <p>Fixing permissions of objects not owned by correct user</p>
+    </div>
+
+    <h4>Objects owned by <span th:text="${baduser}"></span>: <span th:text="${objects.size()}"></span></h4>
+
+    <form action = "/fix" method = "post">
+        <button>Fix</button>
+    </form>
+
+    <br/>
+
+    <table style="">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Last Modified</th>
+                <th>ACL Users</th>
+                <th>Needs Fixed?</th>
+            </tr>
+        </thead>
+        <tbody th:each="o : ${objects}">
+            <tr>
+                <td th:text="${o.name}"/>
+                <td th:text="${o.date}"/>
+                <td th:text="${o.acls}"/>
+                <td th:text="${o.bad}"/>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
